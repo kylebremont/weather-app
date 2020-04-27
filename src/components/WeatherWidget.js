@@ -12,7 +12,6 @@ class WeatherComp extends Component {
         };
 
         this.SetWeather = this.SetWeather.bind(this);
-        // this.GenerateDays = this.GenerateDays.bind(this);
     }
 
     SetWeather() {
@@ -25,84 +24,39 @@ class WeatherComp extends Component {
         this.setState({ days });
     }
 
-    GenerateDays() {
-        let days = this.state.days;
-        return (
-            <div className="row">
-                <div className="col-sm">
-                    {days[0].name}
-                    {days[0].high_temp}
-                    {days[0].low_temp}
-                </div>
-                <div className="col-sm">
-                    {days[1].name}
-                    {days[1].high_temp}
-                    {days[1].low_temp}
-                </div>
-                <div className="col-sm">
-                    {days[2].name}
-                    {days[2].high_temp}
-                    {days[2].low_temp}
-                </div>
-                <div className="col-sm">
-                    {days[3].name}
-                    {days[3].high_temp}
-                    {days[3].low_temp}
-                </div>
-            </div>
-        ) 
-    }
-
     componentDidMount() {
         this.SetWeather();
     }
 
     render() {
 
-        // if (this.state.days.length === 1) {
-        //     this.SetWeather();
-        // }
-
         console.log(this.state.days);
 
         return (
-
             <div className="container">
-                {/* <div className="row">
-                    <div className="col-sm">
-                        {this.state.days[0].name}
-                        <img src={sunny} alt=""/>
-                        <br/>
-                        <b>{this.state.high_temp}</b>
-                    </div>
-                    <div className="col-sm">
-                        <img src={rainy} alt=""/>
-                    </div>
-                </div> */}
                 <div className="row">
-                    {/* <div className="col-sm">
-                        {this.state.days[0].name}
-                        {this.state.days[0].high_temp}
-                        {this.state.days[0].low_temp}
+                    <div className="col-sm">
+                        {this.state.days && this.state.length ? this.state.days[0].name : null}
+                        {this.state.days && this.state.length ? this.state.days[0].high_temp : null}
+                        {this.state.days && this.state.length ? this.state.days[0].low_temp : null}
                     </div>
                     <div className="col-sm">
-                        {this.state.days[1].name}
-                        {this.state.days[1].high_temp}
-                        {this.state.days[1].low_temp}
+                        {this.state.days && this.state.length ? this.state.days[1].name : null}
+                        {this.state.days && this.state.length ? this.state.days[1].high_temp : null}
+                        {this.state.days && this.state.length ? this.state.days[1].low_temp : null}
                     </div>
                     <div className="col-sm">
-                        {this.state.days[2].name}
-                        {this.state.days[2].high_temp}
-                        {this.state.days[2].low_temp}
+                        {this.state.days && this.state.length ? this.state.days[2].name : null}
+                        {this.state.days && this.state.length ? this.state.days[2].high_temp : null}
+                        {this.state.days && this.state.length ? this.state.days[2].low_temp : null}
                     </div>
                     <div className="col-sm">
-                        {this.state.days[3].name}
-                        {this.state.days[3].high_temp}
-                        {this.state.days[3].low_temp}
-                    </div> */}
+                        {this.state.days && this.state.length ? this.state.days[3].name : null}
+                        {this.state.days && this.state.length ? this.state.days[3].high_temp : null}
+                        {this.state.days && this.state.length ? this.state.days[3].low_temp : null}
+                    </div>
                 </div>
             </div>
-
         );
 
     }
