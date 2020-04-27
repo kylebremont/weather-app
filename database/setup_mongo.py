@@ -1,5 +1,4 @@
 import pymongo
-import dns # required for connecting with SRV
 import json
 import pprint
 import requests
@@ -8,7 +7,7 @@ import requests
 class DBSetup():
 
     def __init__(self):
-        self.token = '3516dc9239854dae9ab86fca5e67e787'
+        self.token = ''
         self.url = 'https://api.weatherbit.io/v2.0/forecast/daily?'
         self.query = 'city=Boulder,CO&units=I&days=3&key='
 
