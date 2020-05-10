@@ -7,7 +7,7 @@ import requests
 class DBSetup():
 
     def __init__(self):
-        self.token = ''
+        self.token = '3516dc9239854dae9ab86fca5e67e787'
         self.url = 'https://api.weatherbit.io/v2.0/forecast/daily?'
         self.query = 'city=Boulder,CO&units=I&days=7&key='
 
@@ -32,11 +32,11 @@ class DBSetup():
                 high_temp = data_json[i]['max_temp']
                 low_temp = data_json[i]['min_temp']
                 precip = data_json[i]['precip']
-                weather_dict[date] = [{'high_temp': high_temp}, {'low_temp': low_temp}, {'precip': precip}]
+                weather_dict[date] = {'high_temp': high_temp, 'low_temp': low_temp, 'precip': precip}
 
             self.weather_collection.insert_one(weather_dict)
         else:
-            print('Error!')
+            print('Error: could not connect to weather api')
 
     def drop_data(self):
         self.weather_collection.drop()
