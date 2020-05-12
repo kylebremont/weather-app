@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import WeatherWidget from './components/WeatherWidget';
 import './App.css';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
@@ -9,7 +8,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <h1 align="center">Hello World</h1>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -23,10 +22,14 @@ function App() {
         >
           Learn React
         </a>
+      </header> */}
+      <header className="App-header">
+        <h1 align="center">Boulder Weather Forecast</h1>
+        <div className="weather-widget">
+          <WeatherWidget></WeatherWidget>
+        </div>
       </header>
-      <div className="weather-widget">
-        <WeatherWidget></WeatherWidget>
-      </div>
+      
     </div>
   );
 }

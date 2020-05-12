@@ -1,4 +1,11 @@
 node_modules
 config.js
 
-DS_Store
+.DS_Store
+
+# terraform
+terraform/terraform*
+terraform/.terraform
+
+# GCP credentials
+weather-credentials.json

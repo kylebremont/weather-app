@@ -1,4 +1,5 @@
 import pymongo
+import dns
 import json
 import pprint
 import requests
@@ -31,10 +32,13 @@ class DBSetup():
                 date = data_json[i]['valid_date']
                 high_temp = data_json[i]['max_temp']
                 low_temp = data_json[i]['min_temp']
-                precip = data_json[i]['precip']
-                weather_dict[date] = {'high_temp': high_temp, 'low_temp': low_temp, 'precip': precip}
+                precip_prob = data_json[i]['pop']
+                wind_spd = data_json[i]['wind_spd']
+                snow = data_json[i]['snow']
+                icon = data_json[i]['weather']['icon']
+                description = data_json[i]['weather']['description']
+                self.weather_collection.insert_one( { 'date': date, 'high_temp': high_temp, 'low_temp': low_temp, 'precip_prob': precip_prob, 'icon': icon, 'description': description } )
 
-            self.weather_collection.insert_one(weather_dict)
         else:
             print('Error: could not connect to weather api')
 
