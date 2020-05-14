@@ -79,8 +79,11 @@ class WeatherComp extends Component {
     PopulateDropdown() {
         let cities = []
         cities.push({value: "Anchorage,AK", display: "Anchorage, AK"});
+        cities.push({value: "Scottsdale,AZ", display: "Scottsdale, AZ"});
+        cities.push({value: "Los Angeles,CA", display: "Los Angeles, CA"});
         cities.push({value: "Boulder,CO", display: "Boulder, CO"});
         cities.push({value: "Denver,CO", display: "Denver, CO"});
+        cities.push({value: "Houston,TX", display: "Houston, TX"});
         cities.push({value: "Seattle,WA", display: "Seattle, WA"});
         
         this.setState({cities});
