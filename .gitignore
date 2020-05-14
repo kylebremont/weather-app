@@ -9,3 +9,6 @@ terraform/.terraform
 
 # GCP credentials
 weather-credentials.json
+
+#cron job file
+cronjob.sh
