@@ -1,8 +1,7 @@
 .col-sm {
     background-color: #6699cc;
     border-radius: 25px;
-    margin-right: 3px;
-    margin-left: 3px;
+    margin: 3px;
     text-shadow:
         0.07em 0 black,
         0 0.07em black,

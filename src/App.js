@@ -1,37 +1,36 @@
-import React from 'react';
+import React, { Component } from 'react';
 import WeatherWidget from './components/WeatherWidget';
 import './App.css';
 import  'bootstrap/dist/css/bootstrap.min.css' ;
 
 
-function App() {
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      city: "Anchorage",
+    };
+    this.GetCity = this.GetCity.bind(this);
+  }
 
-  return (
-    <div className="App">
-      {/* <header className="App-header">
-        <h1 align="center">Hello World</h1>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
-      <header className="App-header">
-        <h1 align="center">Boulder Weather Forecast</h1>
-        <div className="weather-widget">
-          <WeatherWidget></WeatherWidget>
-        </div>
-      </header>
-      
-    </div>
-  );
+  GetCity(city) {
+    city = city.substring(0, city.indexOf(','));
+    this.setState({city})
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1 align="center">{this.state.city} Weather Forecast</h1>
+          <div className="weather-widget">
+            <WeatherWidget GetCity={this.GetCity}></WeatherWidget>
+          </div>
+        </header> 
+      </div>
+    );
+  }
+  
 }
 
 export default App;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { weatherKey } from '../config.js';
 import './WeatherWidget.css';
 
 var http = require("http");
@@ -18,60 +19,39 @@ class WeatherComp extends Component {
         super(props);
 
         this.state = {
-            url: "http://35.188.59.17:3500/",
-            days: [],
+            url: "https://api.weatherbit.io/v2.0/forecast/daily?",
+            city: "Anchorage,AK",
+            cities: [],
+            data: [],
+            error: null,
         };
 
-        this.SetWeather = this.SetWeather.bind(this);
         this.GetWeatherIcon = this.GetWeatherIcon.bind(this);
+        this.GetDayName = this.GetDayName.bind(this);
+        this.GetWeather = this.GetWeather.bind(this);
+        this.PopulateDropdown = this.PopulateDropdown.bind(this);
     }
 
-    SetWeather() {
-        var url = this.state.url + "weather";
-        http.get(url, (res) => {
-            const { statusCode } = res;
-            const contentType = res.headers['content-type'];
-
-            // validate response
-            let error;
-            if (statusCode !== 200) {
-                error = new Error('Request Failed.\n' + 'Status Code: ' + statusCode);
-            } else if (!/^application\/json/.test(contentType)) {
-                error = new Error('Invalid content-type.\n' + 'Expected application/json but received ' + contentType);
-            }
-            if (error) {
-                console.error(error.message);
-                // consume response data to free up memory
-                res.resume();
-                return;
-            }
-
-            res.setEncoding('utf8');
-            let rawData = '';
-
-            res.on('data', (chunk) => { rawData += chunk; });
-
-            // parse response
-            res.on('end', () => {
-                try {
-                    const parsedData = JSON.parse(rawData);
-                    this.setState({days: parsedData});
-                } catch (e) {
-                    console.error(e.message);
+    GetWeather() {
+        fetch(`${this.state.url}city=${this.state.city}&units=I&days=7&key=${weatherKey}`)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({data: result.data});
+                },
+                (error) => {
+                    this.setState({error});
                 }
-            });
-        }).on('error', (e) => {
-            console.error('Got error: ' + e.message);
-        });
+            )
     }
 
     GetWeatherIcon(dayIndex) {
-        var iconCode = this.state.days[dayIndex].icon + '.png';
+        var iconCode = this.state.data[dayIndex]['weather'].icon + '.png';
         return <img src={icons[iconCode]} height="50" width="50"  alt="Weather Icon" />;
     }
 
     GetDayName(dayIndex) {
-        var dt = new Date(this.state.days[dayIndex].date);
+        var dt = new Date(this.state.data[dayIndex].valid_date);
         var day = dt.getDay();
         switch (day) {
             case 0:
@@ -91,18 +71,44 @@ class WeatherComp extends Component {
         }
     }
 
-    componentDidMount() {
-        // get weather from server
-        this.SetWeather();
+    ChangeCity(city) {
+        this.setState({city}, () => this.GetWeather())
+        this.props.GetCity(city);
+    }
+
+    PopulateDropdown() {
+        let cities = []
+        cities.push({value: "Anchorage,AK", display: "Anchorage, AK"});
+        cities.push({value: "Boulder,CO", display: "Boulder, CO"});
+        cities.push({value: "Denver,CO", display: "Denver, CO"});
+        cities.push({value: "Seattle,WA", display: "Seattle, WA"});
+        
+        this.setState({cities});
+    }
+
+    componentDidMount() {        
+        // get weather from weatherbit.io api
+        this.GetWeather();
+        // populated dropdown menu with available cities
+        this.PopulateDropdown();
     }
 
     render() {
-
-
+        
         return (
 
             <div>
-                {this.state.days.length > 0 && (
+                {/* dropdown menu */}
+                {this.state.data.length > 0 && (
+                    <div>
+                        City: <select onChange={(e) => this.ChangeCity(e.target.value)}>
+                            {this.state.cities.map((city) => <option key={city.value} value={city.value}>{city.display}</option>)}
+                        </select>
+                    </div>
+                )}
+
+                {/* weather info */}
+                {this.state.data.length > 0 && (
                     <div className='row'>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(0)}
@@ -110,14 +116,14 @@ class WeatherComp extends Component {
                             {this.GetDayName(0)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[0].high_temp}
+                                {this.state.data[0].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[0].low_temp}
+                                {this.state.data[0].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[0].description}
+                            {this.state.data[0]['weather'].description}
                         </div>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(1)}
@@ -125,14 +131,14 @@ class WeatherComp extends Component {
                             {this.GetDayName(1)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[1].high_temp}
+                                {this.state.data[1].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[1].low_temp}
+                                {this.state.data[1].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[1].description}
+                            {this.state.data[1]['weather'].description}
                         </div>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(2)}
@@ -140,14 +146,14 @@ class WeatherComp extends Component {
                             {this.GetDayName(2)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[2].high_temp}
+                                {this.state.data[2].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[2].low_temp}
+                                {this.state.data[2].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[2].description}
+                            {this.state.data[2]['weather'].description}
                         </div>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(3)}
@@ -155,14 +161,14 @@ class WeatherComp extends Component {
                             {this.GetDayName(3)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[3].high_temp}
+                                {this.state.data[3].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[3].low_temp}
+                                {this.state.data[3].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[3].description}
+                            {this.state.data[3]['weather'].description}
                         </div>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(4)}
@@ -170,14 +176,14 @@ class WeatherComp extends Component {
                             {this.GetDayName(4)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[4].high_temp}
+                                {this.state.data[4].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[4].low_temp}
+                                {this.state.data[4].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[4].description}
+                            {this.state.data[4]['weather'].description}
                         </div>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(5)}
@@ -185,14 +191,14 @@ class WeatherComp extends Component {
                             {this.GetDayName(5)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[5].high_temp}
+                                {this.state.data[5].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[5].low_temp}
+                                {this.state.data[5].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[5].description}
+                            {this.state.data[5]['weather'].description}
                         </div>
                         <div className='col-sm'>
                             {this.GetWeatherIcon(6)}
@@ -200,21 +206,22 @@ class WeatherComp extends Component {
                             {this.GetDayName(6)}
                             <br/>
                             <label className="high-temp">
-                                {this.state.days[6].high_temp}
+                                {this.state.data[6].high_temp}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.days[6].low_temp}
+                                {this.state.data[6].low_temp}
                             </label>
                             <br/>
-                            {this.state.days[6].description}
+                            {this.state.data[6]['weather'].description}
                         </div>
                     </div>
                 )}
 
-                {this.state.days.length > 0 && (
+                {/* week dates */}
+                {this.state.data.length > 0 && (
                     <div className="dates">
-                        ({this.state.days[0].date.slice(5, 10).replace("-", "/")} - {this.state.days[6].date.slice(5, 10).replace("-", "/")})
+                        ({this.state.data[0].valid_date.slice(5, 10).replace("-", "/")} - {this.state.data[6].valid_date.slice(5, 10).replace("-", "/")})
                     </div>
                 )}
             </div>
