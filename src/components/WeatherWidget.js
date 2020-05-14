@@ -100,7 +100,7 @@ class WeatherComp extends Component {
             <div>
                 {/* dropdown menu */}
                 {this.state.data.length > 0 && (
-                    <div>
+                    <div className="dropdown">
                         City: <select onChange={(e) => this.ChangeCity(e.target.value)}>
                             {this.state.cities.map((city) => <option key={city.value} value={city.value}>{city.display}</option>)}
                         </select>
