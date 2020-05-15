@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { weatherKey } from '../config.js';
 import './WeatherWidget.css';
 
-var http = require("http");
 
 // import all the icons
 function ImportIcons(r) {
@@ -90,6 +89,8 @@ class WeatherComp extends Component {
                 return "Saturday";
             case 6:
                 return "Sunday";
+            default:
+                return "Error";
         }
     }
 
@@ -105,6 +106,11 @@ class WeatherComp extends Component {
         cities.push({value: "Los Angeles,CA", display: "Los Angeles, CA"});
         cities.push({value: "Boulder,CO", display: "Boulder, CO"});
         cities.push({value: "Denver,CO", display: "Denver, CO"});
+        cities.push({value: "Orlando,FL", display: "Orlando, FL"});
+        cities.push({value: "Chicago,IL", display: "Chicago, IL"});
+        cities.push({value: "New York,NY", display: "New York, NY"});
+        cities.push({value: "Athens,TN", display: "Athens, TN"});
+        cities.push({value: "Knoxville,TN", display: "Knoxville, TN"});
         cities.push({value: "Houston,TX", display: "Houston, TX"});
         cities.push({value: "Seattle,WA", display: "Seattle, WA"});
         
