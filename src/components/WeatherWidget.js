@@ -33,6 +33,7 @@ class WeatherComp extends Component {
         this.GetWeatherForecast = this.GetWeatherForecast.bind(this);
         this.GetCurrentWeather = this.GetCurrentWeather.bind(this);
         this.PopulateDropdown = this.PopulateDropdown.bind(this);
+        this.ChangeCity = this.ChangeCity.bind(this);
     }
 
     GetWeatherForecast() {
@@ -151,7 +152,6 @@ class WeatherComp extends Component {
                                 {this.state.forecast_data[0].low_temp + "°"}
                             </label>
                             <br/>
-                            {/* {this.state.forecast_data[0]['weather'].description} */}
                         </div>
                         <div className='row'>
                             
@@ -168,7 +168,6 @@ class WeatherComp extends Component {
                                     {this.state.forecast_data[1].low_temp + "°"}
                                 </label>
                                 <br/>
-                                {/* {this.state.forecast_data[1]['weather'].description} */}
                             </div>
                             <div className='col-sm'>
                                 {this.GetWeatherIcon(2)}
@@ -183,7 +182,6 @@ class WeatherComp extends Component {
                                     {this.state.forecast_data[2].low_temp + "°"}
                                 </label>
                                 <br/>
-                                {/* {this.state.forecast_data[2]['weather'].description} */}
                             </div>
                             <div className='col-sm'>
                                 {this.GetWeatherIcon(3)}
@@ -198,7 +196,6 @@ class WeatherComp extends Component {
                                     {this.state.forecast_data[3].low_temp + "°"}
                                 </label>
                                 <br/>
-                                {/* {this.state.forecast_data[3]['weather'].description} */}
                             </div>
                             <div className='col-sm'>
                                 {this.GetWeatherIcon(4)}
@@ -213,7 +210,6 @@ class WeatherComp extends Component {
                                     {this.state.forecast_data[4].low_temp + "°"}
                                 </label>
                                 <br/>
-                                {/* {this.state.forecast_data[4]['weather'].description} */}
                             </div>
                             <div className='col-sm'>
                                 {this.GetWeatherIcon(5)}
@@ -228,7 +224,6 @@ class WeatherComp extends Component {
                                     {this.state.forecast_data[5].low_temp + "°"}
                                 </label>
                                 <br/>
-                                {/* {this.state.forecast_data[5]['weather'].description} */}
                             </div>
                             <div className='col-sm'>
                                 {this.GetWeatherIcon(6)}
@@ -243,7 +238,6 @@ class WeatherComp extends Component {
                                     {this.state.forecast_data[6].low_temp + "°"}
                                 </label>
                                 <br/>
-                                {/* {this.state.forecast_data[6]['weather'].description} */}
                             </div>
                         </div>
                     </div>
