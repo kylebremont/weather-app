@@ -3,10 +3,10 @@
     border-radius: 25px;
     margin: 3px;
     text-shadow:
-        0.07em 0 black,
-        0 0.07em black,
-        -0.07em 0 black,
-        0 -0.07em black;
+        0.05em 0 black,
+        0 0.05em black,
+        -0.05em 0 black,
+        0 -0.05em black;
 }
 
 .high-temp {
@@ -19,6 +19,12 @@
     color: #4545EF;
     margin: 0;
     padding: 0;
+}
+
+.current-temp {
+    margin: 0;
+    padding: 0;
+    font-size: 65px;
 }
 
 .dates {

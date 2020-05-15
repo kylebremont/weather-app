@@ -19,25 +19,41 @@ class WeatherComp extends Component {
         super(props);
 
         this.state = {
-            url: "https://api.weatherbit.io/v2.0/forecast/daily?",
-            city: "Anchorage,AK",
+            forecast_url: "https://api.weatherbit.io/v2.0/forecast/daily?",
+            current_url: "https://api.weatherbit.io/v2.0/current?",
+            current_city: "Anchorage,AK",
             cities: [],
-            data: [],
+            forecast_data: [],
+            current_weather_data: [],
             error: null,
         };
 
         this.GetWeatherIcon = this.GetWeatherIcon.bind(this);
         this.GetDayName = this.GetDayName.bind(this);
-        this.GetWeather = this.GetWeather.bind(this);
+        this.GetWeatherForecast = this.GetWeatherForecast.bind(this);
+        this.GetCurrentWeather = this.GetCurrentWeather.bind(this);
         this.PopulateDropdown = this.PopulateDropdown.bind(this);
     }
 
-    GetWeather() {
-        fetch(`${this.state.url}city=${this.state.city}&units=I&days=7&key=${weatherKey}`)
+    GetWeatherForecast() {
+        fetch(`${this.state.forecast_url}city=${this.state.current_city}&units=I&days=7&key=${weatherKey}`)
             .then(res => res.json())
             .then(
                 (result) => {
-                    this.setState({data: result.data});
+                    this.setState({forecast_data: result.data});
+                },
+                (error) => {
+                    this.setState({error});
+                }
+            )
+    }
+
+    GetCurrentWeather() {
+        fetch(`${this.state.current_url}city=${this.state.current_city}&units=I&key=${weatherKey}`)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({current_weather_data: result.data}, () => {this.GetWeatherForecast()})
                 },
                 (error) => {
                     this.setState({error});
@@ -46,12 +62,17 @@ class WeatherComp extends Component {
     }
 
     GetWeatherIcon(dayIndex) {
-        var iconCode = this.state.data[dayIndex]['weather'].icon + '.png';
+        var iconCode = this.state.forecast_data[dayIndex]['weather'].icon + '.png';
         return <img src={icons[iconCode]} height="50" width="50"  alt="Weather Icon" />;
     }
 
+    GetCurrentWeatherIcon() {
+        var iconCode = this.state.current_weather_data[0]['weather'].icon + '.png';
+        return <img src={icons[iconCode]} height="50" width="50" alt="Weather Icon" />;
+    }
+
     GetDayName(dayIndex) {
-        var dt = new Date(this.state.data[dayIndex].valid_date);
+        var dt = new Date(this.state.forecast_data[dayIndex].valid_date);
         var day = dt.getDay();
         switch (day) {
             case 0:
@@ -72,7 +93,7 @@ class WeatherComp extends Component {
     }
 
     ChangeCity(city) {
-        this.setState({city}, () => this.GetWeather())
+        this.setState({current_city: city}, () => this.GetCurrentWeather())
         this.props.GetCity(city);
     }
 
@@ -89,9 +110,9 @@ class WeatherComp extends Component {
         this.setState({cities});
     }
 
-    componentDidMount() {        
-        // get weather from weatherbit.io api
-        this.GetWeather();
+    componentDidMount() {
+        // get current weather, has callback to get weather forecast
+        this.GetCurrentWeather();
         // populated dropdown menu with available cities
         this.PopulateDropdown();
     }
@@ -102,7 +123,7 @@ class WeatherComp extends Component {
 
             <div>
                 {/* dropdown menu */}
-                {this.state.data.length > 0 && (
+                {this.state.forecast_data.length > 0 && (
                     <div className="dropdown">
                         City: <select onChange={(e) => this.ChangeCity(e.target.value)}>
                             {this.state.cities.map((city) => <option key={city.value} value={city.value}>{city.display}</option>)}
@@ -111,120 +132,127 @@ class WeatherComp extends Component {
                 )}
 
                 {/* weather info */}
-                {this.state.data.length > 0 && (
-                    <div className='row'>
+                {(this.state.forecast_data.length > 0 && this.state.current_weather_data.length > 0) && (
+                    <div>
                         <div className='col-sm'>
-                            {this.GetWeatherIcon(0)}
+                            {this.GetCurrentWeatherIcon()}
                             <br/>
                             {this.GetDayName(0)}
                             <br/>
+                            <label className="current-temp">
+                                {this.state.current_weather_data[0].temp + "°"}
+                            </label>
+                            <br/>
                             <label className="high-temp">
-                                {this.state.data[0].high_temp}
+                                {this.state.forecast_data[0].high_temp + "°"}
                             </label>
                             <br/>
                             <label className="low-temp">
-                                {this.state.data[0].low_temp}
+                                {this.state.forecast_data[0].low_temp + "°"}
                             </label>
                             <br/>
-                            {this.state.data[0]['weather'].description}
+                            {/* {this.state.forecast_data[0]['weather'].description} */}
                         </div>
-                        <div className='col-sm'>
-                            {this.GetWeatherIcon(1)}
-                            <br/>
-                            {this.GetDayName(1)}
-                            <br/>
-                            <label className="high-temp">
-                                {this.state.data[1].high_temp}
-                            </label>
-                            <br/>
-                            <label className="low-temp">
-                                {this.state.data[1].low_temp}
-                            </label>
-                            <br/>
-                            {this.state.data[1]['weather'].description}
-                        </div>
-                        <div className='col-sm'>
-                            {this.GetWeatherIcon(2)}
-                            <br/>
-                            {this.GetDayName(2)}
-                            <br/>
-                            <label className="high-temp">
-                                {this.state.data[2].high_temp}
-                            </label>
-                            <br/>
-                            <label className="low-temp">
-                                {this.state.data[2].low_temp}
-                            </label>
-                            <br/>
-                            {this.state.data[2]['weather'].description}
-                        </div>
-                        <div className='col-sm'>
-                            {this.GetWeatherIcon(3)}
-                            <br/>
-                            {this.GetDayName(3)}
-                            <br/>
-                            <label className="high-temp">
-                                {this.state.data[3].high_temp}
-                            </label>
-                            <br/>
-                            <label className="low-temp">
-                                {this.state.data[3].low_temp}
-                            </label>
-                            <br/>
-                            {this.state.data[3]['weather'].description}
-                        </div>
-                        <div className='col-sm'>
-                            {this.GetWeatherIcon(4)}
-                            <br/>
-                            {this.GetDayName(4)}
-                            <br/>
-                            <label className="high-temp">
-                                {this.state.data[4].high_temp}
-                            </label>
-                            <br/>
-                            <label className="low-temp">
-                                {this.state.data[4].low_temp}
-                            </label>
-                            <br/>
-                            {this.state.data[4]['weather'].description}
-                        </div>
-                        <div className='col-sm'>
-                            {this.GetWeatherIcon(5)}
-                            <br/>
-                            {this.GetDayName(5)}
-                            <br/>
-                            <label className="high-temp">
-                                {this.state.data[5].high_temp}
-                            </label>
-                            <br/>
-                            <label className="low-temp">
-                                {this.state.data[5].low_temp}
-                            </label>
-                            <br/>
-                            {this.state.data[5]['weather'].description}
-                        </div>
-                        <div className='col-sm'>
-                            {this.GetWeatherIcon(6)}
-                            <br/>
-                            {this.GetDayName(6)}
-                            <br/>
-                            <label className="high-temp">
-                                {this.state.data[6].high_temp}
-                            </label>
-                            <br/>
-                            <label className="low-temp">
-                                {this.state.data[6].low_temp}
-                            </label>
-                            <br/>
-                            {this.state.data[6]['weather'].description}
+                        <div className='row'>
+                            
+                            <div className='col-sm'>
+                                {this.GetWeatherIcon(1)}
+                                <br/>
+                                {this.GetDayName(1)}
+                                <br/>
+                                <label className="high-temp">
+                                    {this.state.forecast_data[1].high_temp + "°"}
+                                </label>
+                                <br/>
+                                <label className="low-temp">
+                                    {this.state.forecast_data[1].low_temp + "°"}
+                                </label>
+                                <br/>
+                                {/* {this.state.forecast_data[1]['weather'].description} */}
+                            </div>
+                            <div className='col-sm'>
+                                {this.GetWeatherIcon(2)}
+                                <br/>
+                                {this.GetDayName(2)}
+                                <br/>
+                                <label className="high-temp">
+                                    {this.state.forecast_data[2].high_temp + "°"}
+                                </label>
+                                <br/>
+                                <label className="low-temp">
+                                    {this.state.forecast_data[2].low_temp + "°"}
+                                </label>
+                                <br/>
+                                {/* {this.state.forecast_data[2]['weather'].description} */}
+                            </div>
+                            <div className='col-sm'>
+                                {this.GetWeatherIcon(3)}
+                                <br/>
+                                {this.GetDayName(3)}
+                                <br/>
+                                <label className="high-temp">
+                                    {this.state.forecast_data[3].high_temp + "°"}
+                                </label>
+                                <br/>
+                                <label className="low-temp">
+                                    {this.state.forecast_data[3].low_temp + "°"}
+                                </label>
+                                <br/>
+                                {/* {this.state.forecast_data[3]['weather'].description} */}
+                            </div>
+                            <div className='col-sm'>
+                                {this.GetWeatherIcon(4)}
+                                <br/>
+                                {this.GetDayName(4)}
+                                <br/>
+                                <label className="high-temp">
+                                    {this.state.forecast_data[4].high_temp + "°"}
+                                </label>
+                                <br/>
+                                <label className="low-temp">
+                                    {this.state.forecast_data[4].low_temp + "°"}
+                                </label>
+                                <br/>
+                                {/* {this.state.forecast_data[4]['weather'].description} */}
+                            </div>
+                            <div className='col-sm'>
+                                {this.GetWeatherIcon(5)}
+                                <br/>
+                                {this.GetDayName(5)}
+                                <br/>
+                                <label className="high-temp">
+                                    {this.state.forecast_data[5].high_temp + "°"}
+                                </label>
+                                <br/>
+                                <label className="low-temp">
+                                    {this.state.forecast_data[5].low_temp + "°"}
+                                </label>
+                                <br/>
+                                {/* {this.state.forecast_data[5]['weather'].description} */}
+                            </div>
+                            <div className='col-sm'>
+                                {this.GetWeatherIcon(6)}
+                                <br/>
+                                {this.GetDayName(6)}
+                                <br/>
+                                <label className="high-temp">
+                                    {this.state.forecast_data[6].high_temp + "°"}
+                                </label>
+                                <br/>
+                                <label className="low-temp">
+                                    {this.state.forecast_data[6].low_temp + "°"}
+                                </label>
+                                <br/>
+                                {/* {this.state.forecast_data[6]['weather'].description} */}
+                            </div>
                         </div>
                     </div>
                 )}
 
                 {/* week dates */}
-                {this.state.data.length > 0 && (
+                {this.state.forecast_data.length > 0 && (
                     <div className="dates">
-                        ({this.state.data[0].valid_date.slice(5, 10).replace("-", "/")} - {this.state.data[6].valid_date.slice(5, 10).replace("-", "/")})
+                        ({this.state.forecast_data[0].valid_date.slice(5, 10).replace("-", "/")} - {this.state.forecast_data[6].valid_date.slice(5, 10).replace("-", "/")})
                     </div>
                 )}
             </div>
