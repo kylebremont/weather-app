@@ -18,7 +18,7 @@
 .low-temp {
     color: #4545EF;
     margin: 0;
-    padding: 0;
+    padding: 0 0 10px 0;
 }
 
 .current-temp {
